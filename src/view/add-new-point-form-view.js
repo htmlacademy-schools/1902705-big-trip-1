@@ -1,37 +1,37 @@
 import dayjs from 'dayjs';
 
-export const createEditFormTemplate = (waypoint) => {
-  const {waypointType, price, city, startDate, endDate, offers, cityDescription} = waypoint;
+export const createAddFormTemplate = (waypoint) => {
+  const {waypointType, price, city, startDate, endDate, offers, cityDescription, photos} = waypoint;
 
-  const createEditedOfferElement = (offer) => {
-    const isChecked = offer.isChosen ? ' checked=""' : '';
-    return `<div class="event__available-offers">
+  const createPhotoElement = (photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`;
+
+  const photosList = photos.map(createPhotoElement).join('');
+  const beginDate = dayjs(startDate).format('DD/MM/YY HH:mm');
+  const endDatetime = dayjs(endDate).format('DD/MM/YY HH:mm');
+
+  const createOfferElement = (offer) => `<div class="event__available-offers">
                       <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}"${isChecked}>
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" >
                         <label class="event__offer-label" for="event-offer-name-1">
                           <span class="event__offer-title">${offer.name}</span>
-                          +€&nbsp;
+                          &plus;&euro;&nbsp;
                           <span class="event__offer-price">${offer.price}</span>
                         </label>
-                      </div>
-    `;
-  };
-  const editedOfferElements = offers.map(createEditedOfferElement).join('');
-  const createOffersList = (editedOffers) => {
-    if (editedOffers.length !== 0){
+                      </div>`;
+
+  const addableOfferElements = offers.map(createOfferElement).join('');
+  const createAddableOfferList = (addableOffers) => {
+    if (addableOffers.length !== 0){
       return `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                    ${editedOffers}
+                    ${addableOfferElements}
                   </section>`;
     }
     return '';
   };
-  const offersList = createOffersList(editedOfferElements);
+  const addableOfferList = createAddableOfferList(offers);
 
-  const beginDate = dayjs(startDate).format('DD/MM/YY HH:mm');
-  const endDatetime = dayjs(endDate).format('DD/MM/YY HH:mm');
-
-  return `<li class="trip-events__item">
+  return ` <li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
@@ -122,17 +122,20 @@ export const createEditFormTemplate = (waypoint) => {
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
-                  <button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>
+                  <button class="event__reset-btn" type="reset">Cancel</button>
                 </header>
                 <section class="event__details">
-                  ${offersList}
+                  ${addableOfferList}
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${cityDescription}</p>
+
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                      ${photosList}
+                      </div>
+                    </div>
                   </section>
                 </section>
               </form>

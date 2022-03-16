@@ -7,7 +7,10 @@ import {createSortTemplate} from './view/sort-view';
 import {createEditFormTemplate} from './view/edit-form-view';
 import {createWaypointTemplate} from './view/waypoint-view';
 import {createEventsListTemplate} from './view/event-list-view';
+import {generateWaypoint} from './mock/waypoint';
 
+const waypointCount = 15;
+const waypointsArray = Array.from({length: waypointCount}, generateWaypoint);
 
 const tripMainElement = document.querySelector('.trip-main');
 const tripNavigationElement = tripMainElement.querySelector('.trip-controls__navigation');
@@ -18,12 +21,12 @@ renderTemplate(tripEventsElement, createEventsListTemplate(), RenderPosition.BEF
 
 const tripEventsListElement = tripEventsElement.querySelector('.trip-events__list');
 
-renderTemplate(tripMainElement, createSiteInfoTemplate(), RenderPosition.AFTERBEGIN);
+renderTemplate(tripMainElement, createSiteInfoTemplate(waypointsArray), RenderPosition.AFTERBEGIN);
 renderTemplate(tripNavigationElement, createSiteMenuTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(tripFiltersElement, createFiltersTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(tripEventsElement, createSortTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(tripEventsListElement, createEditFormTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(tripEventsListElement, createEditFormTemplate(waypointsArray[0]), RenderPosition.BEFOREEND);
 
-for (let i = 0; i < 3; i++){
-  renderTemplate(tripEventsListElement, createWaypointTemplate(), RenderPosition.BEFOREEND);
+for (let i = 1; i < waypointCount; i++){
+  renderTemplate(tripEventsListElement, createWaypointTemplate(waypointsArray[i]), RenderPosition.BEFOREEND);
 }
