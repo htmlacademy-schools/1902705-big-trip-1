@@ -1,7 +1,8 @@
 import {generateDates} from '../mock/waypoint';
 import dayjs from 'dayjs';
+import {createElement} from '../render';
 
-export const createSiteInfoTemplate = (waypoints) => {
+const createSiteInfoTemplate = (waypoints) => {
   const countTotalPrice = () => {
     let total = 0;
     for (let i = 0; i < waypoints.length; i++){
@@ -26,3 +27,28 @@ export const createSiteInfoTemplate = (waypoints) => {
             </p>
           </section>`;
 };
+
+export default class SiteInfoView {
+  #element = null;
+  #waypoints = null;
+
+  constructor(waypoints) {
+    this.#waypoints = waypoints;
+  }
+
+  get element(){
+    if (!this.#element){
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template(){
+    return createSiteInfoTemplate(this.#waypoints);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
