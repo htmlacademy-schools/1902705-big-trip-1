@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import AbstractView from './abstract-view';
 
 export const createAddFormTemplate = (waypoint) => {
   const {waypointType, price, city, startDate, endDate, offers, cityDescription, photos} = waypoint;
@@ -141,3 +142,16 @@ export const createAddFormTemplate = (waypoint) => {
               </form>
             </li>`;
 };
+
+export default class AddNewPointFormView extends AbstractView{
+  #waypoint = null;
+
+  constructor(waypoint) {
+    super();
+    this.#waypoint = waypoint;
+  }
+
+  get template(){
+    return createAddFormTemplate()(this.#waypoint);
+  }
+}

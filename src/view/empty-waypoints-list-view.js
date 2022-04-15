@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view';
 
 const createEmptyWaypointsListTemplate = () => (
   `<p class="trip-events__msg">
@@ -6,22 +6,8 @@ const createEmptyWaypointsListTemplate = () => (
     </p>`
 );
 
-export default class EmptyWaypointsListView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
+export default class EmptyWaypointsListView extends AbstractView{
   get template() {
     return createEmptyWaypointsListTemplate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
