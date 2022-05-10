@@ -152,7 +152,7 @@ export default class EditFormView extends AbstractView{
     return createEditFormTemplate(this.#waypoint);
   }
 
-  setFormSubmit = (callback) => {
+  setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
@@ -160,6 +160,7 @@ export default class EditFormView extends AbstractView{
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit();
+    this._callback.formSubmit(this.#waypoint);
   }
 
   setRollupClickHandler = (callback) => {
