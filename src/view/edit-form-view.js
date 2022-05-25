@@ -172,4 +172,34 @@ export default class EditFormView extends AbstractView{
     evt.preventDefault();
     this._callback.rollupClick();
   }
+
+  static parseTaskToData = (task) => ({...task,
+    isDueDate: task.dueDate !== null,
+    isRepeating: isTaskRepeating(task.repeating),
+  });
+
+  static parseDataToTask = (data) => {
+    const task = {...data};
+
+    if (!task.isDueDate) {
+      task.dueDate = null;
+    }
+
+    if (!task.isRepeating) {
+      task.repeating = {
+        mo: false,
+        tu: false,
+        we: false,
+        th: false,
+        fr: false,
+        sa: false,
+        su: false,
+      };
+    }
+
+    delete task.isDueDate;
+    delete task.isRepeating;
+
+    return task;
+  }
 }
