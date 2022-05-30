@@ -34,9 +34,16 @@ export default class PointPresenter {
     this.#editFormComponent = new EditFormView(waypoint);
 
     this.#waypointItemComponent.setEditClickHandler(this.#handleEditClick);
-    this.#editFormComponent.setRollupClickHandler(this.#handleRollupClick);
-    this.#editFormComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    // this.#editFormComponent.setRollupClickHandler(this.#handleRollupClick);
+    // this.#editFormComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#waypointItemComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+
+    this.#editFormComponent.restoreHandlers = () => {
+      this.#editFormComponent.setFormSubmitHandler(this.#handleFormSubmit);
+      this.#editFormComponent.setRollupClickHandler(this.#handleRollupClick);
+      this.#editFormComponent.setInnerHandlers();
+    };
+    this.#editFormComponent.restoreHandlers();
 
     if (prevWaypointComponent === null || prevEditComponent === null){
       render(this.#waypointsListElement, this.#waypointItemComponent, RenderPosition.BEFOREEND);
@@ -80,6 +87,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editFormComponent.reset(this.#waypoint);
       this.#replaceFormToItem();
     }
   };
@@ -89,6 +97,7 @@ export default class PointPresenter {
   };
 
   #handleRollupClick = () => {
+    this.#editFormComponent.reset(this.#waypoint);
     this.#replaceFormToItem();
   };
 

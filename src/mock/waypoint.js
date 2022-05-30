@@ -25,18 +25,19 @@ const generateDescription = () => {
   return description;
 };
 
+const waypointTypes = [
+  'Taxi',
+  'Bus',
+  'Train',
+  'Ship',
+  'Drive',
+  'Flight',
+  'Check-in',
+  'Sightseeing',
+  'Restaurant'
+];
+
 const generateWaypointType = () => {
-  const waypointTypes = [
-    'Taxi',
-    'Bus',
-    'Train',
-    'Ship',
-    'Drive',
-    'Flight',
-    'Check-in',
-    'Sightseeing',
-    'Restaurant'
-  ];
   const randomInt = getRandomInt(0, waypointTypes.length - 1);
   return waypointTypes[randomInt];
 };
