@@ -64,65 +64,39 @@ const generateCity = () => {
 };
 
 const generateOffers = () => {
-  const offers = [
-    {
-      offerType: 'luggage',
-      name: 'Add luggage',
-      price: 30,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'comfort class',
-      name: 'Switch to comfort',
-      price: 100,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'meal',
-      name: 'Add meal',
-      price: 15,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'seats choice',
-      name: 'Choose seats',
-      price: 5,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'train travel',
-      name: 'Travel by train',
-      price: 40,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'car',
-      name: 'Rent a car',
-      price: 200,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'breakfast',
-      name: 'Add breakfast',
-      price: 40,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-    {
-      offerType: 'lunch',
-      name: 'Lunch in city',
-      price: 55,
-      isChosen: Boolean(getRandomInt(0,1))
-    },
-  ];
-  const numberOfOffers = getRandomInt(0, 5);
-  const selectedOffers = [];
-  while (selectedOffers.length < numberOfOffers){
-    const current = Math.floor(Math.random() * offers.length);
-    if (selectedOffers.indexOf(offers[current]) === -1) {
-      selectedOffers.push(offers[current]);
+  const result = [];
+
+  for (const type of waypointTypes) {
+    const offers = [];
+    const titles = [
+      'Add luggage',
+      'Order Uber',
+      'Switch to comfort',
+      'Rent a car',
+      'Add breakfast',
+      'Book tickets',
+      'Lunch in city'
+    ];
+
+    for (let j = 0; j < getRandomInt(0, 5); j++) {
+      const nextTitle = titles[getRandomInt(0, titles.length - 1)];
+      offers.push(
+        {
+          id: j + 1,
+          title: nextTitle,
+          price: getRandomInt(10, 150),
+          isActive: Boolean(getRandomInt(0, 1))
+        });
+      titles.splice(titles.indexOf(nextTitle), 1);
     }
+
+    result.push({
+      type,
+      offers
+    });
   }
-  return selectedOffers;
+
+  return result;
 };
 
 export const generateDates = () => {

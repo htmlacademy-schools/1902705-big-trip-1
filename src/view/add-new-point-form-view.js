@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract-view';
+import {createFormOffersTemplate} from '../utils/offers-utils';
 
 export const createAddFormTemplate = (waypoint) => {
   const {waypointType, price, city, startDate, endDate, offers, cityDescription, photos} = waypoint;
@@ -10,27 +11,6 @@ export const createAddFormTemplate = (waypoint) => {
   const beginDate = dayjs(startDate).format('DD/MM/YY HH:mm');
   const endDatetime = dayjs(endDate).format('DD/MM/YY HH:mm');
 
-  const createOfferElement = (offer) => `<div class="event__available-offers">
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" >
-                        <label class="event__offer-label" for="event-offer-name-1">
-                          <span class="event__offer-title">${offer.name}</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${offer.price}</span>
-                        </label>
-                      </div>`;
-
-  const addableOfferElements = offers.map(createOfferElement).join('');
-  const createAddableOfferList = (addableOffers) => {
-    if (addableOffers.length !== 0){
-      return `<section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                    ${addableOfferElements}
-                  </section>`;
-    }
-    return '';
-  };
-  const addableOfferList = createAddableOfferList(offers);
 
   return ` <li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -126,7 +106,7 @@ export const createAddFormTemplate = (waypoint) => {
                   <button class="event__reset-btn" type="reset">Cancel</button>
                 </header>
                 <section class="event__details">
-                  ${addableOfferList}
+                  ${createFormOffersTemplate(offers, waypointType)}
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
