@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import SmartView from './smart-view';
 import {createFormOffersTemplate} from '../utils/offers-utils';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createEditFormTemplate = (waypoint) => {
   const {waypointType, price, city, startDate, endDate, offers, cityDescription, id} = waypoint;
