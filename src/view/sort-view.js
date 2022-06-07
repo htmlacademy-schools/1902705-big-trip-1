@@ -1,7 +1,7 @@
-import AbstractView from './abstract-view';
-import {SortType} from '../utils/const';
+import AbstractView from './abstract-view.js';
+import { SortType } from '../utils/sorting.js';
 
-const createSortTemplate = () => (
+const CreateSortTemplate = (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" data-sort-type="${SortType.SORT_DAY}">
@@ -27,21 +27,23 @@ const createSortTemplate = () => (
               <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
               <label class="trip-sort__btn" for="sort-offer">Offers</label>
             </div>
-   </form>`
-);
+          </form>
+  `);
+
 
 export default class SortView extends AbstractView {
   get template() {
-    return createSortTemplate();
+    return CreateSortTemplate;
   }
 
-  setSortTypeChangeHandler = (callback) => {
-    this._callback.sortTypeChange = callback;
-    this.element.addEventListener('change', this.#sortTypeChangeHandler);
+  setSortChangeClickHandler = (callback) => {
+    this._callback.sortChange = callback;
+    document.querySelectorAll('.trip-sort__input').forEach((element) => element.addEventListener('click', this.#SortChangeHandler));
   }
 
-  #sortTypeChangeHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  #SortChangeHandler = (evt) => {
+    if (evt.target.checked === true) {
+      this._callback.sortChange(evt.target.dataset.sortType);
+    }
   }
 }

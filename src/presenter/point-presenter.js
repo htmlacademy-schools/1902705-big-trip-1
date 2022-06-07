@@ -1,6 +1,6 @@
-import WaypointView from '../view/waypoint-view';
+import PointView from '../view/point-view';
 import EditFormView from '../view/edit-form-view';
-import {render, RenderPosition, replace, remove} from '../utils/render';
+import { remove, render, renderPosition, replace } from '../utils/render.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -8,103 +8,91 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #waypointsListElement = null;
+  #pointContainer = null;
+
+  #point = null;
+  #prevPoint = null;
+  #pointComponent = null;
+  #pointEditComponent = null;
+
   #changeData = null;
   #changeMode = null;
-
-  #waypointItemComponent = null;
-  #editFormComponent = null;
-
-  #waypoint = null;
   #mode = Mode.DEFAULT;
 
-  constructor(waypointsListElement, changeData, changeMode) {
-    this.#waypointsListElement = waypointsListElement;
+  constructor(pointContainer, changeData, changeMode) {
+    this.#pointContainer = pointContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
   }
 
-  init = (waypoint) => {
-    this.#waypoint = waypoint;
+  init = (point) => {
+    this.#point = point;
+    this.#prevPoint = this.#point;
 
-    const prevWaypointComponent = this.#waypointItemComponent;
-    const prevEditComponent = this.#editFormComponent;
+    const prevPointComponent = this.#pointComponent;
+    const prevEditPointComponent = this.#pointEditComponent;
 
-    this.#waypointItemComponent = new WaypointView(waypoint);
-    this.#editFormComponent = new EditFormView(waypoint);
+    this.#pointComponent = new PointView(point);
+    this.#pointEditComponent = new EditFormView(point);
 
-    this.#waypointItemComponent.setEditClickHandler(this.#handleEditClick);
-    this.#waypointItemComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#pointComponent.setEditClickHandler(() => {
+      this.#replacePointToForm();
+      document.addEventListener('keydown', this.#onEscKeydowm);
+    });
 
-    this.#editFormComponent.restoreHandlers = () => {
-      this.#editFormComponent.setFormSubmitHandler(this.#handleFormSubmit);
-      this.#editFormComponent.setRollupClickHandler(this.#handleRollupClick);
-      this.#editFormComponent.setInnerHandlers();
-    };
-    this.#editFormComponent.restoreHandlers();
+    this.#pointEditComponent.setFormSubmitHandler(() => {
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#onEscKeydowm);
+    });
 
-    if (prevWaypointComponent === null || prevEditComponent === null){
-      render(this.#waypointsListElement, this.#waypointItemComponent, RenderPosition.BEFOREEND);
-      return;
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
+
+    render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
+
+    if (this.#mode === Mode.DEFAULT && prevPointComponent) {
+      replace(this.#pointComponent, prevPointComponent);
     }
-    if (this.#mode === Mode.DEFAULT){
-      replace(this.#waypointItemComponent, prevWaypointComponent);
-    }
-    if (this.#mode === Mode.EDITING) {
-      replace(this.#editFormComponent, prevEditComponent);
+    if (this.#mode === Mode.EDITING && prevEditPointComponent) {
+      replace(this.#pointEditComponent, prevEditPointComponent);
     }
 
-    remove(prevWaypointComponent);
-    remove(prevEditComponent);
-  }
-
-  destroy = () => {
-    remove(this.#waypointItemComponent);
-    remove(this.#editFormComponent);
+    remove(prevPointComponent);
+    remove(prevEditPointComponent);
   }
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
-      this.#replaceFormToItem();
+      this.#replaceFormToPoint();
     }
   }
 
-  #replaceItemToForm = () => {
-    replace(this.#editFormComponent, this.#waypointItemComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
+  }
+
+  #replacePointToForm = () => {
+    replace(this.#pointEditComponent, this.#pointComponent);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   }
 
-  #replaceFormToItem = () => {
-    replace(this.#waypointItemComponent, this.#editFormComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  #replaceFormToPoint = () => {
+    replace(this.#pointComponent, this.#pointEditComponent);
     this.#mode = Mode.DEFAULT;
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+  #onEscKeydowm = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc')
+    {
       evt.preventDefault();
-      this.#editFormComponent.reset(this.#waypoint);
-      this.#replaceFormToItem();
+      this.#replaceFormToPoint();
+      this.#pointEditComponent.reset(this.#prevPoint);
+      document.removeEventListener('keydown', this.#onEscKeydowm);
     }
-  };
+  }
 
-  #handleEditClick = () => {
-    this.#replaceItemToForm();
-  };
-
-  #handleRollupClick = () => {
-    this.#editFormComponent.reset(this.#waypoint);
-    this.#replaceFormToItem();
-  };
-
-  #handleFormSubmit = (waypoint) => {
-    this.#changeData(waypoint);
-    this.#replaceFormToItem();
-  };
-
-  #handleFavoriteClick = () => {
-    this.#changeData({...this.#waypoint, isFavorite: !this.#waypoint.isFavorite});
+  #handleFavorite = () => {
+    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import {createElement} from '../utils/render.js';
 
 export default class AbstractView {
   #element = null;
@@ -19,7 +19,7 @@ export default class AbstractView {
   }
 
   get template() {
-    throw new Error('Abstract method not implemented: get template');
+    throw new Error('Abstract view method not implemented: get template');
   }
 
   removeElement() {

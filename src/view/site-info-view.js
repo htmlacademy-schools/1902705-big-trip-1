@@ -1,42 +1,38 @@
-import {generateDates} from '../mock/waypoint';
-import dayjs from 'dayjs';
-import AbstractView from './abstract-view';
+import {createElement} from '../utils/render.js';
 
-const createSiteInfoTemplate = (waypoints) => {
-  const countTotalPrice = () => {
-    let total = 0;
-    for (let i = 0; i < waypoints.length; i++){
-      total += waypoints[i].price;
-    }
-    return total;
-  };
+const createHeaderInfoTemplate = () => `<section class="trip-main__trip-info  trip-info">
+    <div class="trip-info__main">
+      <h1 class="trip-info__title">Geneva &mdash; Chamonix</h1>
 
-  const randomDates = generateDates();
-  const beginDate = dayjs(randomDates.start).format('MMM D');
-  const endDate = dayjs(randomDates.end).format('D');
+      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+    </div>
 
-  return `<section class="trip-main__trip-info  trip-info">
-            <div class="trip-info__main">
-              <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
+    <p class="trip-info__cost">
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+    </p>
+  </section>`;
 
-              <p class="trip-info__dates">${beginDate}&nbsp;&mdash;&nbsp;${endDate}</p>
-            </div>
+export default class SiteInfoView {
+  #element = null;
+  #pointStart = null;
 
-            <p class="trip-info__cost">
-              Total: &euro;&nbsp;<span class="trip-info__cost-value">${countTotalPrice()}</span>
-            </p>
-          </section>`;
-};
-
-export default class SiteInfoView extends AbstractView{
-  #waypoints = null;
-
-  constructor(waypoints) {
-    super();
-    this.#waypoints = waypoints;
+  constructor (pointStart) {
+    this.#pointStart = pointStart;
   }
 
-  get template(){
-    return createSiteInfoTemplate(this.#waypoints);
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createHeaderInfoTemplate(this.#pointStart);
+  }
+
+  removeElement() {
+    this.#element = null;
   }
 }
