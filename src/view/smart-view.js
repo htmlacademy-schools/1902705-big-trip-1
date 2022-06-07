@@ -1,40 +1,58 @@
-import AbstractView from './abstract-view.js';
+import AbstractView from './abstract-view';
+import { generateDescription,  generatePictures, isEqualCities, servises} from '../mock/point';
+import { nanoid } from 'nanoid';
 
-export default class SmartView extends AbstractView {
-  _data = {};
+export default class SmartView extends AbstractView{
+    _data = {};
+    _pointType = null;
+    initialData = null;
 
-  updateData = (update, justDataUpdating) => {
-    if (!update) {
-      return;
+
+    reset = (point) =>{
+      this.updateData({...point,
+        destination : point.destination,
+        destinationInfo : {description: point.destinationInfo.description,
+          pictures : point.destinationInfo.pictures},
+        id: nanoid()});
+      this.renderOffers(point.destination);
     }
 
-    this._data = {...this._data, ...update};
 
-    if (justDataUpdating) {
-      return;
+    setFormClickHandler = () =>{
+      (this.element.querySelectorAll('.event__type-input'))
+        .forEach((element) => {
+          element.addEventListener('click', this.#updateClickHandler);
+        });
     }
 
-    this.updateElement();
-  }
+    setEditDestinationForm = () =>{
+      this.element.querySelector('.event__input--destination')
+        .addEventListener('input', this.#updateDestinationHandler);
+    }
 
-  updateElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
+    #updateDestinationHandler = (evt) =>{
+      evt.preventDefault();
+      if(isEqualCities(evt.target.value)){
+        this.updateData({destination : evt.target.value, destinationInfo : {description: generateDescription(),
+          pictures : generatePictures()}});
+      }
+    }
 
-    const newElement = this.element;
+    #updateClickHandler = (evt) =>{
+      evt.preventDefault();
+      this._pointType = evt.target.value;
+      this.updateData({pointType : this._pointType});
+    }
 
-    parent.replaceChild(newElement, prevElement);
+    renderOffers = (point) =>{
+      const count = servises[point].length;
+      const offers = this.element.querySelectorAll('.event__offer-selector');
+      for(let i = 0; i < 3; i++){
+        offers[i].classList.add('visually-hidden');
+      }
+      for(let i = 0; i < count; i++){
+        offers[i].classList.remove('visually-hidden');
+      }
+    }
 
-    this.restoreHandlers();
-  }
-
-  restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-  }
-
-  #setInnerHandlers = () => {
-
-  }
 }
