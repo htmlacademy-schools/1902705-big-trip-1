@@ -29,11 +29,6 @@ export const servises = {
   'restaurant' : [createOffer(30, ' Smoking room'), createOffer(100, ' VIP hall')]
 };
 
-const getRandomIntInclusive = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
 
 export const generateDescription = () => {
   const texts = [
@@ -83,12 +78,12 @@ const generateDestinationCity = () => {
     'Baku'
   ];
 
-  return cities[getRandomIntInclusive(0, cities.length - 1)];
+  return cities[getRandomInteger(0, cities.length - 1)];
 };
 
 const generateOffers = () => {
   const offers = [];
-  for (let i = 0; i < getRandomIntInclusive(0, 5); i++) {
+  for (let i = 0; i < getRandomInteger(0, 5); i++) {
     offers.push({ id: i, title: 'example title', price: getRandomInteger(10, 100) });
   }
   return offers;
@@ -136,7 +131,7 @@ export const generatePoint = () => {
   return {
     pointType,
     id: nanoid(),
-    price: getRandomIntInclusive(5, 200),
+    price: getRandomInteger(5, 200),
     destination: generateDestinationCity(),
     offer: {
       type: pointType,
