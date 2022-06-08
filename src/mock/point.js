@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 import {getRandomInteger} from '../utils/common';
 
-export const isEqualCities = (inputValue) =>{
+export const isEqualCities = (inputValue) => {
   const cities = [
     'Amsterdam',
     'Geneva',
@@ -16,7 +16,7 @@ export const isEqualCities = (inputValue) =>{
 
 const createOffer = (cost, name) => ({price: cost, description : name});
 
-export const servises = {
+export const services = {
   'taxi' : [createOffer(30, 'Add luggage'),
     createOffer(100, 'Switch to comfort class')],
   'bus' : [createOffer(20, 'Add luggage'), createOffer(10, 'Add meal'), createOffer(100, 'Switch to comfort class')],
@@ -143,10 +143,8 @@ export const generatePoint = () => {
     },
     isFavorite: Boolean(getRandomInteger(0, 1)),
     duration: countDuration(dates.start, dates.end),
-    offersForm : servises[pointType],
+    offersForm : services[pointType],
     dateStartEvent: dates.start,
     dateEndEvent: dates.end
   };
 };
-
-
